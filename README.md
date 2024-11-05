@@ -23,11 +23,3 @@ Le but de ce projet est de créer un **outil accessible et interactif** pour aid
 - `assets/` : Images et illustrations utilisées dans l'application.
 - `README.md` : Documentation complète du projet.
 
-## 🚀 Installation
-
-Pour exécuter ce projet en local, veuillez suivre les étapes suivantes :
-
-1. Clonez ce repository :
-   ```bash
-   git clone https://github.com/yourusername/nom-du-repository.git
-   cd nom-du-repository
