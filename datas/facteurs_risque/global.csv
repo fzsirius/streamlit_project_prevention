@@ -1,0 +1,103 @@
+Localisation,Année,Âge,Sexe,Cause du décès ou des blessures,Facteur de risque,Mesurer,Valeur,Limite inférieure,Limite supérieure
+Global,1990,Tout age,Les deux,Toutes causes,"Eau, hygiène et assainissement",Rang des décès,6,,
+Global,1990,Tout age,Les deux,Toutes causes,"Eau, hygiène et assainissement",Pourcentage du total des décès,0.0683583644600082,0.048317014102192,0.0889956371623015
+Global,2021,Tout age,Les deux,Toutes causes,"Eau, hygiène et assainissement",Rang des décès,14,,
+Global,2021,Tout age,Les deux,Toutes causes,"Eau, hygiène et assainissement",Pourcentage du total des décès,0.0179019914407924,0.0107085033918728,0.0252674272433711
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,"Eau, hygiène et assainissement",Décès  % de variation,-0.7381155681209192,,
+Global,1990,Tout age,Les deux,Toutes causes,Pollution de l’air,Rang des décès,1,,
+Global,1990,Tout age,Les deux,Toutes causes,Pollution de l’air,Pourcentage du total des décès,0.1592148427720847,0.1337935399258222,0.1822484552596582
+Global,2021,Tout age,Les deux,Toutes causes,Pollution de l’air,Rang des décès,2,,
+Global,2021,Tout age,Les deux,Toutes causes,Pollution de l’air,Pourcentage du total des décès,0.1190128546109081,0.1005502004157047,0.1378865048562367
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Pollution de l’air,Décès  % de variation,-0.2525015096659396,,
+Global,1990,Tout age,Les deux,Toutes causes,Autres risques environnementaux,Rang des décès,14,,
+Global,1990,Tout age,Les deux,Toutes causes,Autres risques environnementaux,Pourcentage du total des décès,0.0187951692030422,-0.0003302025482551,0.0375900330629592
+Global,2021,Tout age,Les deux,Toutes causes,Autres risques environnementaux,Rang des décès,12,,
+Global,2021,Tout age,Les deux,Toutes causes,Autres risques environnementaux,Pourcentage du total des décès,0.0239174775200413,-0.0006660610176578,0.0477504771689542
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Autres risques environnementaux,Décès  % de variation,0.272533237751858,,
+Global,1990,Tout age,Les deux,Toutes causes,Malnutrition infantile et maternelle,Rang des décès,2,,
+Global,1990,Tout age,Les deux,Toutes causes,Malnutrition infantile et maternelle,Pourcentage du total des décès,0.1461587085618808,0.1273725092397251,0.1593835994513158
+Global,2021,Tout age,Les deux,Toutes causes,Malnutrition infantile et maternelle,Rang des décès,9,,
+Global,2021,Tout age,Les deux,Toutes causes,Malnutrition infantile et maternelle,Pourcentage du total des décès,0.0378853416520626,0.0315273906129146,0.0447457421274663
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Malnutrition infantile et maternelle,Décès  % de variation,-0.7407931280672019,,
+Global,1990,Tout age,Les deux,Toutes causes,Tabac,Rang des décès,4,,
+Global,1990,Tout age,Les deux,Toutes causes,Tabac,Pourcentage du total des décès,0.1246545434366318,0.1001689106686614,0.1490109437386811
+Global,2021,Tout age,Les deux,Toutes causes,Tabac,Rang des décès,3,,
+Global,2021,Tout age,Les deux,Toutes causes,Tabac,Pourcentage du total des décès,0.1067989576624794,0.0851244878841855,0.1269242206858037
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Tabac,Décès  % de variation,-0.14324055330746366,,
+Global,1990,Tout age,Les deux,Toutes causes,Consommation d’alcool,Rang des décès,13,,
+Global,1990,Tout age,Les deux,Toutes causes,Consommation d’alcool,Pourcentage du total des décès,0.0274232614081015,0.0206707762782255,0.0371609944794805
+Global,2021,Tout age,Les deux,Toutes causes,Consommation d’alcool,Rang des décès,11,,
+Global,2021,Tout age,Les deux,Toutes causes,Consommation d’alcool,Pourcentage du total des décès,0.0266553170248846,0.021157009088297,0.0333920002007963
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Consommation d’alcool,Décès  % de variation,-0.028003393607663043,,
+Global,1990,Tout age,Les deux,Toutes causes,Usage de drogues,Rang des décès,18,,
+Global,1990,Tout age,Les deux,Toutes causes,Usage de drogues,Pourcentage du total des décès,0.0042822088916124,0.0035811584031571,0.0050667607989991
+Global,2021,Tout age,Les deux,Toutes causes,Usage de drogues,Rang des décès,17,,
+Global,2021,Tout age,Les deux,Toutes causes,Usage de drogues,Pourcentage du total des décès,0.006828280885431,0.0060653431839757,0.007641864616078
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Usage de drogues,Décès  % de variation,0.59456977888342,,
+Global,1990,Tout age,Les deux,Toutes causes,Glycémie  à jeun élevée,Rang des décès,8,,
+Global,1990,Tout age,Les deux,Toutes causes,Glycémie  à jeun élevée,Pourcentage du total des décès,0.0469233734683201,0.0410410326303737,0.052842503982339
+Global,2021,Tout age,Les deux,Toutes causes,Glycémie  à jeun élevée,Rang des décès,5,,
+Global,2021,Tout age,Les deux,Toutes causes,Glycémie  à jeun élevée,Pourcentage du total des décès,0.0779779478612148,0.0668872769207259,0.0889576471966646
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Glycémie  à jeun élevée,Décès  % de variation,0.6618146159900655,,
+Global,1990,Tout age,Les deux,Toutes causes,Haute tension artérielle systolique,Rang des décès,3,,
+Global,1990,Tout age,Les deux,Toutes causes,Haute tension artérielle systolique,Pourcentage du total des décès,0.142405565376448,0.1194242564045823,0.1628995779924926
+Global,2021,Tout age,Les deux,Toutes causes,Haute tension artérielle systolique,Rang des décès,1,,
+Global,2021,Tout age,Les deux,Toutes causes,Haute tension artérielle systolique,Pourcentage du total des décès,0.1598907165825452,0.13524433427742,0.1819101029354878
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Haute tension artérielle systolique,Décès  % de variation,0.12278418445146676,,
+Global,1990,Tout age,Les deux,Toutes causes,Indice de masse corporelle élevé,Rang des décès,10,,
+Global,1990,Tout age,Les deux,Toutes causes,Indice de masse corporelle élevé,Pourcentage du total des décès,0.031655735009028,0.0157049464064683,0.0498650304188019
+Global,2021,Tout age,Les deux,Toutes causes,Indice de masse corporelle élevé,Rang des décès,6,,
+Global,2021,Tout age,Les deux,Toutes causes,Indice de masse corporelle élevé,Pourcentage du total des décès,0.0546346009734157,0.0273824272241838,0.0826651811582936
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Indice de masse corporelle élevé,Décès  % de variation,0.7258989866396812,,
+Global,1990,Tout age,Les deux,Toutes causes,Faible densité minérale osseuse,Rang des décès,17,,
+Global,1990,Tout age,Les deux,Toutes causes,Faible densité minérale osseuse,Pourcentage du total des décès,0.0045041562392627,0.0038653743896012,0.0049019049941791
+Global,2021,Tout age,Les deux,Toutes causes,Faible densité minérale osseuse,Rang des décès,18,,
+Global,2021,Tout age,Les deux,Toutes causes,Faible densité minérale osseuse,Pourcentage du total des décès,0.0067735669192425,0.0056413322602319,0.0075732047696365
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Faible densité minérale osseuse,Décès  % de variation,0.5038481259147632,,
+Global,1990,Tout age,Les deux,Toutes causes,Risques alimentaires,Rang des décès,5,,
+Global,1990,Tout age,Les deux,Toutes causes,Risques alimentaires,Pourcentage du total des décès,0.1038296363232559,0.0302340099360258,0.1514133968885813
+Global,2021,Tout age,Les deux,Toutes causes,Risques alimentaires,Rang des décès,4,,
+Global,2021,Tout age,Les deux,Toutes causes,Risques alimentaires,Pourcentage du total des décès,0.1063112836620673,0.0290021218243393,0.1593858079382997
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Risques alimentaires,Décès  % de variation,0.023901146403760988,,
+Global,1990,Tout age,Les deux,Toutes causes,Activité physique faible,Rang des décès,16,,
+Global,1990,Tout age,Les deux,Toutes causes,Activité physique faible,Pourcentage du total des décès,0.0074341569014149,0.0031724320101768,0.0119456567030945
+Global,2021,Tout age,Les deux,Toutes causes,Activité physique faible,Rang des décès,16,,
+Global,2021,Tout age,Les deux,Toutes causes,Activité physique faible,Pourcentage du total des décès,0.009685040454164,0.0040159789841478,0.0153596248191711
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Activité physique faible,Décès  % de variation,0.3027759008315661,,
+Global,1990,Tout age,Les deux,Toutes causes,Risques professionnels,Rang des décès,12,,
+Global,1990,Tout age,Les deux,Toutes causes,Risques professionnels,Pourcentage du total des décès,0.0279368678148086,0.0258690382043727,0.0300429048605344
+Global,2021,Tout age,Les deux,Toutes causes,Risques professionnels,Rang des décès,13,,
+Global,2021,Tout age,Les deux,Toutes causes,Risques professionnels,Pourcentage du total des décès,0.0212666044629552,0.0192773586433631,0.0233175154088903
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Risques professionnels,Décès  % de variation,-0.23876203288321637,,
+Global,1990,Tout age,Les deux,Toutes causes,Violence conjugale,Rang des décès,19,,
+Global,1990,Tout age,Les deux,Toutes causes,Violence conjugale,Pourcentage du total des décès,0.0009015380151559,0.0006601806143847,0.0012076649484478
+Global,2021,Tout age,Les deux,Toutes causes,Violence conjugale,Rang des décès,19,,
+Global,2021,Tout age,Les deux,Toutes causes,Violence conjugale,Pourcentage du total des décès,0.0009032010685277,0.0006386873530159,0.0011658517702211
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Violence conjugale,Décès  % de variation,0.001844684687547419,,
+Global,1990,Tout age,Les deux,Toutes causes,Rapports sexuels non protégés,Rang des décès,15,,
+Global,1990,Tout age,Les deux,Toutes causes,Rapports sexuels non protégés,Pourcentage du total des décès,0.0098252420482641,0.0083893061891067,0.0118421291027819
+Global,2021,Tout age,Les deux,Toutes causes,Rapports sexuels non protégés,Rang des décès,15,,
+Global,2021,Tout age,Les deux,Toutes causes,Rapports sexuels non protégés,Pourcentage du total des décès,0.0132730037756973,0.0124618016674556,0.0141894912541021
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Rapports sexuels non protégés,Décès  % de variation,0.35090857919804036,,
+Global,1990,Tout age,Les deux,Toutes causes,Température non optimale,Rang des décès,11,,
+Global,1990,Tout age,Les deux,Toutes causes,Température non optimale,Pourcentage du total des décès,0.0280150490320467,0.0254813090659683,0.0315179063629276
+Global,2021,Tout age,Les deux,Toutes causes,Température non optimale,Rang des décès,10,,
+Global,2021,Tout age,Les deux,Toutes causes,Température non optimale,Pourcentage du total des décès,0.0281032090621663,0.0247100462669126,0.0321991413747663
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Température non optimale,Décès  % de variation,0.0031468811644325316,,
+Global,1990,Tout age,Les deux,Toutes causes,Fonction rénale altérée,Rang des décès,9,,
+Global,1990,Tout age,Les deux,Toutes causes,Fonction rénale altérée,Pourcentage du total des décès,0.0404514162249683,0.0348050808348845,0.0464534717369199
+Global,2021,Tout age,Les deux,Toutes causes,Fonction rénale altérée,Rang des décès,8,,
+Global,2021,Tout age,Les deux,Toutes causes,Fonction rénale altérée,Pourcentage du total des décès,0.053376121154222,0.0456433190434383,0.0605231134839172
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Fonction rénale altérée,Décès  % de variation,0.31951180293351605,,
+Global,1990,Tout age,Les deux,Toutes causes,Taux élevé de cholestérol LDL,Rang des décès,7,,
+Global,1990,Tout age,Les deux,Toutes causes,Taux élevé de cholestérol LDL,Pourcentage du total des décès,0.0531832176437641,0.0310691722959633,0.0759223491050566
+Global,2021,Tout age,Les deux,Toutes causes,Taux élevé de cholestérol LDL,Rang des décès,7,,
+Global,2021,Tout age,Les deux,Toutes causes,Taux élevé de cholestérol LDL,Pourcentage du total des décès,0.0537047836242383,0.0311696841350762,0.0777398440859722
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Taux élevé de cholestérol LDL,Décès  % de variation,0.009806965497420439,,
+Global,1990,Tout age,Les deux,Toutes causes,Maltraitance de l’enfance,Rang des décès,20,,
+Global,1990,Tout age,Les deux,Toutes causes,Maltraitance de l’enfance,Pourcentage du total des décès,0.000177112829355,0.0000302672195386,0.0003994514663693
+Global,2021,Tout age,Les deux,Toutes causes,Maltraitance de l’enfance,Rang des décès,20,,
+Global,2021,Tout age,Les deux,Toutes causes,Maltraitance de l’enfance,Pourcentage du total des décès,0.0001782220802814,0.0000311754217911,0.0004069096325355
+Global,1990 - 2021,Tout age,Les deux,Toutes causes,Maltraitance de l’enfance,Décès  % de variation,0.006262962036344904,,
+
+"Institute for Health Metrics and Evaluation (IHME). GBD Compare Data Visualization. Global Burden of Disease (GBD) Study 2021. Seattle, WA: IHME, University of Washington, 2023. Available from http://vizhub.healthdata.org/gbd-compare. (Accessed 03/11/2024). For terms and conditions of use, please visit http://www.healthdata.org/about/terms-and-conditions"
