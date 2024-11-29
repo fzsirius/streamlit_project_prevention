@@ -14,9 +14,9 @@ st.set_page_config(
 # Barre latérale avec le menu de navigation
 with st.sidebar:
     page = option_menu(
-        "Navigation",
-        ["Accueil", "Dashboards", "Autre Page"],
-        icons=["house", "bar-chart", "gear"],
+        "Menu",
+        ["Accueil", "Dashboards", "Quiz"],
+        icons=["house", "bar-chart", "question-circle"],  # Remplace "quiz" par "question-circle"
         menu_icon="cast",
         default_index=0,
     )
@@ -28,6 +28,6 @@ if page == "Accueil":
 elif page == "Dashboards":
     # Appelle la fonction principale des dashboards avec les onglets
     dashboards.display_dashboard()  # Utilise `display_dashboard` au lieu de `display_overview`
-elif page == "Autre Page":
+elif page == "Quiz":
     # Placeholder pour une page en construction
-    st.write("Cette page est en construction...")
+    st.write("Bienvenue sur la page Quiz!")

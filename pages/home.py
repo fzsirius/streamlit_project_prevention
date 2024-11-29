@@ -51,7 +51,7 @@ def display_home():
     # Section Diagramme Sunburst
     st.markdown(
         """
-        <h3 style="text-align: center; color: #2196F3;">📊 Principaux Facteurs de Risque et Sous-Catégories</h3>
+        <h3 style="text-align: center; color: #FF9800;">📊 Principaux Facteurs de Risque et Sous-Catégories</h3>
         """,
         unsafe_allow_html=True,
     )
