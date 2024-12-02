@@ -6,7 +6,6 @@ import plotly.graph_objects as go
 import pandas as pd
 from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_extras.metric_cards import style_metric_cards
-
 def display_dashboard():
     """
     Fonction principale pour gérer les onglets du Dashboard
@@ -98,7 +97,7 @@ def display_overview_content():
         min_value=int(evolution_data["year"].min()),
         max_value=int(evolution_data["year"].max()),
         value=int(evolution_data["year"].max()),
-        key="overview_year_slider"
+        key="overview_year"
     )
 
     # Ajouter des boutons radio pour sélectionner le sexe
@@ -107,7 +106,6 @@ def display_overview_content():
         options=["Les deux", "Homme", "Femme"],
         index=0,  # Par défaut sur "Les deux"
         horizontal=True  # Boutons alignés horizontalement
-        key="radio_sex_vue_ensemble"
     )
 
     # Catégories principales et sous-catégories pour le graphique en barres
