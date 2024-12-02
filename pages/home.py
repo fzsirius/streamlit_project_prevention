@@ -97,6 +97,43 @@ def display_home():
     # Affichage du diagramme
     st.plotly_chart(fig, use_container_width=True)
 
+
+        # Résumé des sources
+    st.write("---")
+    st.markdown(
+        """
+        <h3 style="text-align: center; font-family: 'Arial'; color: #FF9800;">📚 Sources de données</h3>
+        <p style="text-align: justify; font-size: 16px; font-family: 'Arial'; line-height: 1.6; color: #555;">
+            Les données utilisées dans cette application proviennent des sources fiables suivantes :
+        </p>
+        <ul style="font-size: 16px; font-family: 'Arial'; line-height: 1.6;">
+            <li>
+                <strong>Organisation Mondiale de la Santé (OMS)</strong> : Données issues de l'Observatoire de la Santé Mondiale (<a href="https://www.who.int/data/gho" target="_blank">WHO</a>).
+            </li>
+            <li>
+                <strong>API OMS</strong> : Accès direct aux données via l'API OMS (<a href="https://ghoapi.azureedge.net/api/" target="_blank">Lien API</a>).
+            </li>
+            <li>
+                <strong>Études de référence</strong> : Statistiques globales sur les facteurs de risque comme l'IMC, le tabagisme, la consommation d'alcool, etc.
+            </li>
+        </ul>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Lien pour explorer davantage
+    st.markdown(
+        """
+        <div style="text-align: center;">
+            <a href="https://www.who.int/data/gho" target="_blank" style="font-size: 16px; font-family: 'Arial'; color: #2196F3; text-decoration: none;">
+                🌐 Explorer plus de données sur le site de l'OMS
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
     # Footer
     st.write("---")
     st.markdown(

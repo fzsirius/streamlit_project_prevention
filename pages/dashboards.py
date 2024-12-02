@@ -17,12 +17,13 @@ def display_dashboard():
     """
     Fonction principale pour gérer les onglets du Dashboard
     """
- 
+
     # Création des onglets avec des emojis directement insérés dans les noms d'onglets
-    tab1, tab2 = st.tabs(
+    tab1, tab2, tab3 = st.tabs(
         [
             "🔍  Vue d'ensemble  ",
             "🚬🥂  Focus : Tabac et Alcool  ",
+            "🍔🩺  Focus : Risques Métaboliques  ",
         ]
     )
 
@@ -36,7 +37,6 @@ def display_dashboard():
             """,
             unsafe_allow_html=True,
         )
-        #add_vertical_space(1)  # Optionnel, pour ajouter de l'espace vertical
         display_overview_content()  # Appelle la fonction pour la vue d'ensemble
 
     # Section : Focus sur Tabac et Alcool
@@ -52,6 +52,19 @@ def display_dashboard():
         add_vertical_space(1)  # Optionnel
         display_tobacco_alcohol()  # Appelle la fonction pour le focus sur Tabac et Alcool
 
+    # Section : Focus sur Risques Métaboliques
+    with tab3:
+        st.markdown(
+            """
+            <h2 style="text-align: center; font-family: 'Helvetica'; color: #FF9800;font-size: 30px">
+                Focus : Risques Métaboliques
+            </h2>
+            """,
+            unsafe_allow_html=True,
+        )
+        add_vertical_space(1)  # Optionnel
+        display_metabolic_risks()  # Appelle la fonction pour le focus sur les risques métaboliques
+
     # Ajouter un pied de page
     st.write("---")
     st.markdown(
@@ -63,13 +76,26 @@ def display_dashboard():
         unsafe_allow_html=True,
     )
 
-
 def display_overview_content():
     """
     Fonction pour afficher uniquement le contenu de la vue d'ensemble avec filtres dynamiques pour le sexe.
     """
     # Charger les données
     evolution_data = dl.load_evolution_facteurs()
+    # Afficher un titre
+    # Affichage interactif du tableau de données
+    with st.expander("Afficher les données brutes 📋"):
+        st.write("Les données ci-dessous contiennent des informations détaillées sur les facteurs de risque au fil des années.")
+        st.dataframe(evolution_data)  # Affiche le DataFrame dans une table interactive
+
+    # Ajouter une option de téléchargement des données
+    csv_data = evolution_data.to_csv(index=False)  # Convertir les données en format CSV
+    st.download_button(
+        label="📥 Télécharger les données",
+        data=csv_data,
+        file_name="facteurs_de_risque.csv",
+        mime="text/csv",
+    )
 
     # Ajouter un slider pour sélectionner l'année
     selected_year = st.slider(
@@ -126,7 +152,7 @@ def display_overview_content():
     # Graphique camembert avec Plotly
     fig1 = px.pie(
         pie_data, values='Value', names='Category',
-        title=f"Répartition des décès ({selected_sex}) - {selected_year}",
+        title=f"Répartition des décès par facteur ({selected_sex}) - {selected_year}",
         hole=0.3, color='Category',
         color_discrete_map=category_colors
     )
@@ -286,44 +312,59 @@ def display_overview_content():
 import streamlit as st
 import plotly.express as px
 
-# Fonction pour le focus spécifique sur le tabac et la consommation d’alcool
-import streamlit as st
-import plotly.express as px
 
-# Fonction pour le focus spécifique sur le tabac et la consommation d’alcool
 def display_tobacco_alcohol():
     """
-    Affiche les graphiques pour le tabac et l'alcool, y compris une carte interactive.
+    Affiche les métriques pour le tabac et l'alcool, un graphique d'évolution comparant les décès liés au tabac et à l'alcool,
+    et une carte interactive pour l'alcool.
     """
+
     # Charger les données
     evolution_data = dl.load_evolution_facteurs()
     data_alcohol = dl.load_data_alcohol()  # Charger le DataFrame pour l'alcool
 
     # -- Afficher les metric cards avant le graphique --
 
-    st.write("### Décès par catégorie de personne (2019)")
+    st.write("### Décès lié au tabac et alcool, par catégorie de personne")
 
-    # Filtrer les données pour le tabac et l'alcool pour l'année 2019
+    # Slider pour sélectionner l'année
+    min_year = int(evolution_data["year"].min())
+    max_year = int(evolution_data["year"].max())
+    selected_year = st.slider(
+        "Sélectionnez une année",
+        min_value=min_year,
+        max_value=max_year,
+        value=max_year,  # Par défaut, l'année la plus récente
+        key="metric_year"
+    )
+
+    # Filtrer les données pour l'année sélectionnée
     data_tobacco_alcohol = evolution_data[
-        (evolution_data["year"] == 2019) &
+        (evolution_data["year"] == selected_year) &
         (evolution_data["rei"].isin(["Tabac", "Consommation d’alcool"])) &
         (evolution_data["metric"] == "#")  # Utiliser les valeurs absolues
     ]
 
-    # Mapper les codes de sexe vers des valeurs lisibles pour evolution_data si nécessaire
-    sexe_mapping_evolution = {
-        'Male': 'Homme',
-        'Female': 'Femme',
-        'Both': 'Tous',
-        'Both sexes': 'Tous'
-    }
-    if 'sex' in data_tobacco_alcohol.columns:
-        data_tobacco_alcohol['sex'] = data_tobacco_alcohol['sex'].map(sexe_mapping_evolution)
+    # Standardiser la valeur 'Les deux' en 'Tous' pour uniformiser
+    data_tobacco_alcohol['sex'] = data_tobacco_alcohol['sex'].replace({'Les deux': 'Tous'})
 
-    # Vérifier les valeurs exactes pour la colonne 'age'
-    # Si les valeurs sont en français, ajustez en conséquence
-    age_all = 'All ages'  # Ou 'Tout âge' si vos données sont en français
-    age_adolescents = '<20 years'  # Ou '< 20 ans' si vos données sont en français
+    # Vérifier les valeurs pour 'age'
+    age_all_values = ['Tout âge', 'Tous les âges', 'Tout age', 'All ages']
+    age_all = next((age for age in age_all_values if age in data_tobacco_alcohol['age'].unique()), None)
+    if not age_all:
+        st.write("Valeur inattendue pour 'age'. Veuillez vérifier les données.")
+        return
+
+    # Vérifier la valeur pour les adolescents
+    age_adolescents_values = ['< 20 ans', '<20 ans', '<20 years']
+    age_adolescents = next((age for age in age_adolescents_values if age in data_tobacco_alcohol['age'].unique()), None)
+    if not age_adolescents:
+        st.write("Valeur inattendue pour l'âge des adolescents. Veuillez vérifier les données.")
+        adolescent_total = 0
+    else:
+        adolescent_total = data_tobacco_alcohol[
+            data_tobacco_alcohol["age"] == age_adolescents
+        ]["val"].sum()
 
     # Calculer les totaux pour chaque groupe démographique
     homme_total = data_tobacco_alcohol[
@@ -334,10 +375,6 @@ def display_tobacco_alcohol():
     femme_total = data_tobacco_alcohol[
         (data_tobacco_alcohol["sex"] == "Femme") &
         (data_tobacco_alcohol["age"] == age_all)
-    ]["val"].sum()
-
-    adolescent_total = data_tobacco_alcohol[
-        data_tobacco_alcohol["age"] == age_adolescents  # Filtrer uniquement pour les adolescents
     ]["val"].sum()
 
     # Afficher les indicateurs en une ligne
@@ -356,7 +393,37 @@ def display_tobacco_alcohol():
         box_shadow=True
     )
 
-    # -- Afficher la carte interactive après les metric cards --
+    # -- Ajouter le graphique d'évolution comparant le tabac et l'alcool --
+
+    st.write("### Évolution du nombre de décès liés au tabac et à l'alcool")
+
+    # Filtrer les données pour obtenir les tendances temporelles
+    data_evolution = evolution_data[
+        (evolution_data["metric"] == "#") &
+        (evolution_data["sex"] == "Les deux") &
+        (evolution_data["age"] == "Tout age") &
+        (evolution_data["rei"].isin(["Tabac", "Consommation d’alcool"]))
+    ][["year", "rei", "val"]]
+
+    # Vérifier si le DataFrame n'est pas vide
+    if data_evolution.empty:
+        st.write("Aucune donnée disponible pour l'évolution des décès liés au tabac et à l'alcool.")
+    else:
+        # Graphique linéaire interactif avec Plotly Express
+        fig_evolution = px.line(
+            data_evolution,
+            x="year",
+            y="val",
+            color="rei",
+            labels={"year": "Année", "val": "Nombre de décès", "rei": "Facteur de risque"},
+            #title="Tendances des décès liés au tabac et à l'alcool",
+            markers=True
+        )
+
+        # Afficher le graphique
+        st.plotly_chart(fig_evolution, use_container_width=True)
+
+    # -- Afficher la carte interactive après les metric cards et le graphique --
 
     st.write("### Carte interactive : Pourcentage des décès attribuables à l'alcool (2019)")
     st.write(
@@ -364,13 +431,13 @@ def display_tobacco_alcohol():
         "Sélectionnez le sexe et survolez les pays pour afficher les détails."
     )
 
-    # Mapper les codes de sexe vers des valeurs lisibles
-    sexe_mapping = {
+    # Mapper les codes de sexe vers des valeurs lisibles pour data_alcohol
+    sexe_mapping_alcohol = {
         'SEX_FMLE': 'Femme',
         'SEX_MLE': 'Homme',
         'SEX_BTSX': 'Tous'
     }
-    data_alcohol['sexe'] = data_alcohol['sexe'].map(sexe_mapping)
+    data_alcohol['sexe'] = data_alcohol['sexe'].map(sexe_mapping_alcohol)
 
     # Vérifier les sexes disponibles
     unique_sexes = data_alcohol["sexe"].unique()
@@ -425,3 +492,118 @@ def display_tobacco_alcohol():
 
         # Afficher la carte
         st.plotly_chart(fig_map, use_container_width=True)
+
+
+#------------------------------------------------------------------------
+def display_metabolic_risks():
+    """
+    Affiche le contenu pour le focus sur les risques métaboliques.
+    """
+    import streamlit as st
+    import pandas as pd
+    import plotly.express as px
+    import data_loader as dl  # Assurez-vous d'importer correctement votre module data_loader
+
+    # Les indicateurs disponibles avec leurs codes correspondants
+    indicators = {
+        "Prévalence de l'obésité chez les adultes (IMC ≥30 kg/m²)": "NCD_BMI_30A",
+        "Prévalence de l'hypertension artérielle (PAS ≥140 ou PAD ≥90 mmHg)": "NCD_BLPRESS",
+        "Glycémie à jeun élevée (≥7.0 mmol/L ou ≥126 mg/dL)": "NCD_GLUC",
+        "Cholestérol total élevé (≥5.0 mmol/L ou ≥190 mg/dL)": "NCD_CHOL"
+    }
+
+    # Sélection de l'indicateur
+    selected_indicator_name = st.selectbox(
+        "Sélectionnez un indicateur de risque métabolique",
+        list(indicators.keys())
+    )
+    indicator_code = indicators[selected_indicator_name]
+
+    st.write("### Sélectionnez les filtres pour les données")
+
+    # Initialiser les filtres
+    selected_year = None
+    selected_sex = None
+
+    # Chargement des données sans filtres pour déterminer les dimensions disponibles
+    with st.spinner("Chargement des données pour déterminer les dimensions disponibles..."):
+        sample_data = dl.load_metabolic_risk_data(indicator_code, countries=['FR'])  # Charger un échantillon pour la France
+
+    if sample_data is None or sample_data.empty:
+        st.warning("Aucune donnée disponible pour cet indicateur.")
+        return
+
+    # Vérifier si les dimensions 'Year' et 'Sex' sont disponibles
+    has_year = sample_data['Year'].notnull().any()
+    has_sex = sample_data['Sex'].notnull().any()
+
+    # Sélection de l'année si disponible
+    if has_year:
+        years_available = sample_data['Year'].dropna().unique()
+        selected_year = st.selectbox("Sélectionnez une année", sorted(years_available, reverse=True))
+
+    # Sélection du sexe si disponible
+    if has_sex:
+        # Mapping des sexes pour correspondre aux codes de l'API
+        sex_labels = ["Les deux", "Homme", "Femme"]
+        sex_codes = ["SEX_BTSX", "SEX_MLE", "SEX_FMLE"]
+        sex_mapping = dict(zip(sex_labels, sex_codes))
+
+        selected_sex_label = st.selectbox("Sélectionnez le sexe", sex_labels)
+        selected_sex = sex_mapping[selected_sex_label]
+
+    # Chargement des données avec les filtres
+    with st.spinner("Chargement des données..."):
+        data = dl.load_metabolic_risk_data(
+            indicator_code,
+            years=[selected_year] if selected_year else None,
+            sexes=[selected_sex] if selected_sex else None
+        )
+
+    if data is None or data.empty:
+        st.warning("Aucune donnée disponible pour les critères sélectionnés.")
+        return
+
+    # Prétraitement des données
+    # Convertir les codes pays de ISO-2 à ISO-3 pour la carte
+    try:
+        import pycountry
+        def convert_iso2_to_iso3(iso2):
+            country = pycountry.countries.get(alpha_2=iso2)
+            return country.alpha_3 if country else None
+
+        data['ISO3'] = data['CountryCode'].apply(convert_iso2_to_iso3)
+        data = data.dropna(subset=['ISO3'])
+    except ImportError:
+        st.error("Veuillez installer la bibliothèque 'pycountry' pour la conversion des codes pays.")
+        return
+
+    # Afficher un aperçu des données
+    with st.expander("Afficher les données brutes"):
+        st.write(data)
+
+    # Création de la carte interactive
+    title_parts = [selected_indicator_name]
+    if selected_year:
+        title_parts.append(f"en {selected_year}")
+    if has_sex and selected_sex_label:
+        title_parts.append(f"pour {selected_sex_label}")
+
+    st.write(f"### {' '.join(title_parts)}")
+
+    fig = px.choropleth(
+        data_frame=data,
+        locations='ISO3',
+        color='Value',
+        hover_name='CountryCode',
+        color_continuous_scale=px.colors.sequential.OrRd,
+        labels={'Value': 'Valeur'},
+        title=' '.join(title_parts)
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
+    # Autres visualisations potentielles
+    # Vous pouvez ajouter des graphiques supplémentaires, tels que des tendances temporelles, des distributions par région, etc.
