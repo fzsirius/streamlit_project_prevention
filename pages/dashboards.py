@@ -586,7 +586,8 @@ def display_metabolic_risks():
     # Sélection de l'indicateur
     selected_indicator_name = st.selectbox(
         "Sélectionnez un indicateur de risque métabolique",
-        list(indicators.keys())
+        list(indicators.keys()),
+        key="metabolic_indicator_select"
     )
     indicator_code = indicators[selected_indicator_name]
 
@@ -605,12 +606,20 @@ def display_metabolic_risks():
     sexes_available = sample_data['sexe'].dropna().unique()
 
     # Sélection de l'année
-    selected_year = st.selectbox("Sélectionnez une année", sorted(years_available, reverse=True))
+    selected_year = st.selectbox(
+        "Sélectionnez une année",
+        sorted(years_available, reverse=True),
+        key="metabolic_year_select"
+    )
 
     # Sélection du sexe
     sex_labels = {"SEX_BTSX": "Les deux", "SEX_MLE": "Homme", "SEX_FMLE": "Femme"}
     sex_mapping = {v: k for k, v in sex_labels.items()}  # Inverser le mapping pour le filtre
-    selected_sex_label = st.selectbox("Sélectionnez le sexe", list(sex_labels.values()))
+    selected_sex_label = st.selectbox(
+        "Sélectionnez le sexe",
+        list(sex_labels.values()),
+        key="metabolic_sex_select"
+    )
     selected_sex = sex_mapping[selected_sex_label]
 
     # Filtrer les données en fonction des critères sélectionnés
@@ -625,7 +634,7 @@ def display_metabolic_risks():
         return
 
     # Afficher un aperçu des données
-    with st.expander("Afficher les données brutes"):
+    with st.expander("Afficher les données brutes", expanded=False):
         st.write(data)
 
     # Création de la carte interactive
@@ -658,12 +667,26 @@ def display_metabolic_risks():
     )
 
     # Afficher la carte
-    st.plotly_chart(fig_map, use_container_width=True)
-     # Outil : Calculateur d'IMC
+    st.plotly_chart(fig_map, use_container_width=True, key="metabolic_map_chart")
+
+    # Outil : Calculateur d'IMC
     st.write("---")
     st.header("📊 Calculateur d'Indice de Masse Corporelle (IMC)")
-    weight = st.number_input("Entrez votre poids (kg)", min_value=1, max_value=300, value=70)
-    height = st.number_input("Entrez votre taille (cm)", min_value=50, max_value=250, value=170)
+
+    weight = st.number_input(
+        "Entrez votre poids (kg)",
+        min_value=1,
+        max_value=300,
+        value=70,
+        key="bmi_weight_input"
+    )
+    height = st.number_input(
+        "Entrez votre taille (cm)",
+        min_value=50,
+        max_value=250,
+        value=170,
+        key="bmi_height_input"
+    )
 
     if height > 0:
         height_m = height / 100
@@ -679,6 +702,7 @@ def display_metabolic_risks():
             st.error("Vous êtes en situation d'obésité. Consultez un professionnel de santé pour des conseils adaptés.")
     else:
         st.warning("La taille doit être supérieure à zéro.")
+#fin
 
 
 
