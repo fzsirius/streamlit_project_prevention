@@ -5,6 +5,7 @@ Bienvenue dans le projet **Dashboard de Prévention en Santé Publique** ! Cette
 ## 🌟 Objectif du Projet
 
 Le but de ce projet est de créer un **outil accessible et interactif** pour aider le grand public à comprendre les facteurs de risque qui influencent leur santé. Le dashboard offre des visualisations claires et intuitives des risques comportementaux, environnementaux et métaboliques, ainsi que des conseils pratiques de prévention. 
+L'application collecte toutes les données de facteurs de risques sont éparpillés sur le site de l'OMS via une API.
 
 ## 📈 Fonctionnalités Principales
 
