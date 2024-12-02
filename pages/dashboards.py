@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 import pandas as pd
 from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_extras.metric_cards import style_metric_cards
+
 def display_dashboard():
     """
     Fonction principale pour gérer les onglets du Dashboard
@@ -464,37 +465,6 @@ def display_tobacco_alcohol():
         # Afficher le graphique
         st.plotly_chart(fig_evolution, use_container_width=True)
 
-
-    # -- Ajouter le graphique d'évolution comparant le tabac et l'alcool --
-
-    st.write("### Évolution du nombre de décès liés au tabac et à l'alcool")
-
-    # Filtrer les données pour obtenir les tendances temporelles
-    data_evolution = evolution_data[
-        (evolution_data["metric"] == "#") &
-        (evolution_data["sex"] == "Les deux") &
-        (evolution_data["age"] == "Tout age") &
-        (evolution_data["rei"].isin(["Tabac", "Consommation d’alcool"]))
-    ][["year", "rei", "val"]]
-
-    # Vérifier si le DataFrame n'est pas vide
-    if data_evolution.empty:
-        st.write("Aucune donnée disponible pour l'évolution des décès liés au tabac et à l'alcool.")
-    else:
-        # Graphique linéaire interactif avec Plotly Express
-        fig_evolution = px.line(
-            data_evolution,
-            x="year",
-            y="val",
-            color="rei",
-            labels={"year": "Année", "val": "Nombre de décès", "rei": "Facteur de risque"},
-            #title="Tendances des décès liés au tabac et à l'alcool",
-            markers=True
-        )
-
-        # Afficher le graphique
-        st.plotly_chart(fig_evolution, use_container_width=True)
-
     # -- Afficher la carte interactive après les metric cards et le graphique --
 
     st.write("### Carte interactive : Pourcentage des décès attribuables à l'alcool (2019)")
@@ -702,7 +672,7 @@ def display_metabolic_risks():
             st.error("Vous êtes en situation d'obésité. Consultez un professionnel de santé pour des conseils adaptés.")
     else:
         st.warning("La taille doit être supérieure à zéro.")
-#fin
+
 
 
 
