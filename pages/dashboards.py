@@ -83,6 +83,7 @@ def display_overview_content():
     # Charger les données
     evolution_data = dl.load_evolution_facteurs()
     # Afficher un titre
+
     # Affichage interactif du tableau de données
     with st.expander("Afficher les données brutes 📋"):
         st.write("Les données ci-dessous contiennent des informations détaillées sur les facteurs de risque au fil des années.")
@@ -495,21 +496,20 @@ def display_tobacco_alcohol():
 
 
 #------------------------------------------------------------------------
+# Onglet riques métaboliques
 def display_metabolic_risks():
     """
     Affiche le contenu pour le focus sur les risques métaboliques.
     """
     import streamlit as st
-    import pandas as pd
     import plotly.express as px
     import data_loader as dl  # Assurez-vous d'importer correctement votre module data_loader
 
     # Les indicateurs disponibles avec leurs codes correspondants
     indicators = {
         "Prévalence de l'obésité chez les adultes (IMC ≥30 kg/m²)": "NCD_BMI_30A",
-        "Prévalence de l'hypertension artérielle (PAS ≥140 ou PAD ≥90 mmHg)": "NCD_BLPRESS",
-        "Glycémie à jeun élevée (≥7.0 mmol/L ou ≥126 mg/dL)": "NCD_GLUC",
-        "Cholestérol total élevé (≥5.0 mmol/L ou ≥190 mg/dL)": "NCD_CHOL"
+        "Prévalence de l'hypertension artérielle (PAS ≥140 ou PAD ≥90 mmHg)": "BP_04",
+        "Glycémie à jeun élevée (≥7.0 mmol/L ou ≥126 mg/dL)": "NCD_GLUC_04"
     }
 
     # Sélection de l'indicateur
@@ -521,61 +521,36 @@ def display_metabolic_risks():
 
     st.write("### Sélectionnez les filtres pour les données")
 
-    # Initialiser les filtres
-    selected_year = None
-    selected_sex = None
-
     # Chargement des données sans filtres pour déterminer les dimensions disponibles
     with st.spinner("Chargement des données pour déterminer les dimensions disponibles..."):
-        sample_data = dl.load_metabolic_risk_data(indicator_code, countries=['FR'])  # Charger un échantillon pour la France
+        sample_data = dl.load_metabolic_risk_data(indicator_code)
 
     if sample_data is None or sample_data.empty:
         st.warning("Aucune donnée disponible pour cet indicateur.")
         return
 
-    # Vérifier si les dimensions 'Year' et 'Sex' sont disponibles
-    has_year = sample_data['Year'].notnull().any()
-    has_sex = sample_data['Sex'].notnull().any()
+    # Vérifier les années et sexes disponibles
+    years_available = sample_data['annee'].dropna().unique()
+    sexes_available = sample_data['sexe'].dropna().unique()
 
-    # Sélection de l'année si disponible
-    if has_year:
-        years_available = sample_data['Year'].dropna().unique()
-        selected_year = st.selectbox("Sélectionnez une année", sorted(years_available, reverse=True))
+    # Sélection de l'année
+    selected_year = st.selectbox("Sélectionnez une année", sorted(years_available, reverse=True))
 
-    # Sélection du sexe si disponible
-    if has_sex:
-        # Mapping des sexes pour correspondre aux codes de l'API
-        sex_labels = ["Les deux", "Homme", "Femme"]
-        sex_codes = ["SEX_BTSX", "SEX_MLE", "SEX_FMLE"]
-        sex_mapping = dict(zip(sex_labels, sex_codes))
+    # Sélection du sexe
+    sex_labels = {"SEX_BTSX": "Les deux", "SEX_MLE": "Homme", "SEX_FMLE": "Femme"}
+    sex_mapping = {v: k for k, v in sex_labels.items()}  # Inverser le mapping pour le filtre
+    selected_sex_label = st.selectbox("Sélectionnez le sexe", list(sex_labels.values()))
+    selected_sex = sex_mapping[selected_sex_label]
 
-        selected_sex_label = st.selectbox("Sélectionnez le sexe", sex_labels)
-        selected_sex = sex_mapping[selected_sex_label]
+    # Filtrer les données en fonction des critères sélectionnés
+    with st.spinner("Chargement des données avec les filtres..."):
+        data = sample_data[
+            (sample_data['annee'] == selected_year) &
+            (sample_data['sexe'] == selected_sex)
+        ]
 
-    # Chargement des données avec les filtres
-    with st.spinner("Chargement des données..."):
-        data = dl.load_metabolic_risk_data(
-            indicator_code,
-            years=[selected_year] if selected_year else None,
-            sexes=[selected_sex] if selected_sex else None
-        )
-
-    if data is None or data.empty:
+    if data.empty:
         st.warning("Aucune donnée disponible pour les critères sélectionnés.")
-        return
-
-    # Prétraitement des données
-    # Convertir les codes pays de ISO-2 à ISO-3 pour la carte
-    try:
-        import pycountry
-        def convert_iso2_to_iso3(iso2):
-            country = pycountry.countries.get(alpha_2=iso2)
-            return country.alpha_3 if country else None
-
-        data['ISO3'] = data['CountryCode'].apply(convert_iso2_to_iso3)
-        data = data.dropna(subset=['ISO3'])
-    except ImportError:
-        st.error("Veuillez installer la bibliothèque 'pycountry' pour la conversion des codes pays.")
         return
 
     # Afficher un aperçu des données
@@ -583,27 +558,60 @@ def display_metabolic_risks():
         st.write(data)
 
     # Création de la carte interactive
-    title_parts = [selected_indicator_name]
-    if selected_year:
-        title_parts.append(f"en {selected_year}")
-    if has_sex and selected_sex_label:
-        title_parts.append(f"pour {selected_sex_label}")
+    st.write(f"### {selected_indicator_name} en {selected_year} pour {selected_sex_label}")
 
-    st.write(f"### {' '.join(title_parts)}")
-
-    fig = px.choropleth(
+    # Créer la carte avec Plotly Express
+    fig_map = px.choropleth(
         data_frame=data,
-        locations='ISO3',
-        color='Value',
-        hover_name='CountryCode',
-        color_continuous_scale=px.colors.sequential.OrRd,
-        labels={'Value': 'Valeur'},
-        title=' '.join(title_parts)
+        locations="pays",  # Colonne avec les codes pays ISO Alpha-3
+        locationmode="ISO-3",  # Spécifie le format des codes pays
+        color="valeur",  # Donnée à afficher
+        hover_name="pays",  # Nom des pays au survol
+        hover_data={
+            "valeur": ":.2f",  # Valeur principale
+            "borne_inferieure": ":.2f",  # Borne inférieure
+            "borne_superieure": ":.2f"   # Borne supérieure
+        },
+        title=f"{selected_indicator_name} ({selected_year}, {selected_sex_label})",
+        color_continuous_scale=px.colors.sequential.Plasma,  # Palette de couleurs
+        labels={"valeur": "Valeur (%)"}
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    # Mise à jour du style de la carte
+    fig_map.update_geos(
+        showcoastlines=True, coastlinecolor="LightGray",
+        showland=True, landcolor="whitesmoke",
+        showocean=True, oceancolor="LightBlue",
+        showlakes=True, lakecolor="LightBlue",
+        projection_type="natural earth"
+    )
+
+    # Afficher la carte
+    st.plotly_chart(fig_map, use_container_width=True)
+     # Outil : Calculateur d'IMC
+    st.write("---")
+    st.header("📊 Calculateur d'Indice de Masse Corporelle (IMC)")
+    weight = st.number_input("Entrez votre poids (kg)", min_value=1, max_value=300, value=70)
+    height = st.number_input("Entrez votre taille (cm)", min_value=50, max_value=250, value=170)
+
+    if height > 0:
+        height_m = height / 100
+        bmi = weight / (height_m ** 2)
+        st.write(f"### Votre IMC est : {bmi:.1f}")
+        if bmi < 18.5:
+            st.info("Vous êtes en sous-poids. Consultez un professionnel de santé.")
+        elif 18.5 <= bmi < 24.9:
+            st.success("Votre IMC est dans la plage normale.")
+        elif 25 <= bmi < 29.9:
+            st.warning("Vous êtes en surpoids. Envisagez des mesures pour améliorer votre santé.")
+        else:
+            st.error("Vous êtes en situation d'obésité. Consultez un professionnel de santé pour des conseils adaptés.")
+    else:
+        st.warning("La taille doit être supérieure à zéro.")
 
 
 
-    # Autres visualisations potentielles
-    # Vous pouvez ajouter des graphiques supplémentaires, tels que des tendances temporelles, des distributions par région, etc.
+
+
+
+

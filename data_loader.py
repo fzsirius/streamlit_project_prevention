@@ -84,86 +84,65 @@ def load_data_alcohol():
 #-----------------------------------------------------------------------------------------
 # Fonction pour récupérer les données de manière plus précise et plus optimisées
 
-def load_metabolic_risk_data(indicator_code, countries=None, years=None, sexes=None):
+def load_metabolic_risk_data(indicator_code):
     """
-    Charge les données de risque métabolique depuis l'API GHO de l'OMS.
+    Charge les données pour un indicateur de risque métabolique depuis l'API GHO de l'OMS.
 
     Paramètres :
-    - indicator_code : code de l'indicateur à récupérer
-    - countries : liste des codes pays (codes ISO 2 lettres)
-    - years : liste des années pour lesquelles récupérer les données
-    - sexes : liste des sexes à récupérer ('SEX_MLE', 'SEX_FMLE', 'SEX_BTSX')
+    - indicator_code : code de l'indicateur à récupérer.
 
     Retourne :
-    - pandas DataFrame avec les données
+    - pandas DataFrame avec les données récupérées.
     """
     import requests
     import pandas as pd
 
-    base_url = "https://ghoapi.azureedge.net/api/"
-    url = f"{base_url}{indicator_code}"
+    # URL de l'API pour l'indicateur
+    api_url = f"https://ghoapi.azureedge.net/api/{indicator_code}"
 
-    # Préparer les filtres pour l'API
-    filter_conditions = []
+    # Colonnes à extraire
+    columns = ['SpatialDim', 'TimeDim', 'Dim1', 'Value', 'Low', 'High']
 
-    if countries:
-        country_conditions = ' or '.join([f"SpatialDim eq '{country}'" for country in countries])
-        filter_conditions.append(f"({country_conditions})")
-
-    if years:
-        year_conditions = ' or '.join([f"TimeDim eq {year}" for year in years])
-        filter_conditions.append(f"({year_conditions})")
-
-    if sexes:
-        sex_conditions = ' or '.join([f"Dim1 eq '{sex}'" for sex in sexes])
-        filter_conditions.append(f"({sex_conditions})")
-
-    params = {}
-    if filter_conditions:
-        filter_query = ' and '.join(filter_conditions)
-        params['$filter'] = filter_query
-
-    params['$top'] = 5000  # Ajustez ce nombre si nécessaire
-
-    response = requests.get(url, params=params)
-
+    # Requête à l'API
+    response = requests.get(api_url)
     if response.status_code != 200:
         print(f"Erreur lors de la récupération des données : {response.status_code}")
         return None
 
+    # Charger les données JSON
     data = response.json()
+    if 'value' not in data:
+        print("Aucune donnée disponible dans la réponse de l'API.")
+        return None
 
-    # Vérifier si les données contiennent les dimensions 'TimeDim' et 'Dim1'
-    has_time_dim = any('TimeDim' in entry for entry in data.get('value', []))
-    has_sex_dim = any('Dim1' in entry for entry in data.get('value', []))
+    # Convertir les données en DataFrame
+    df = pd.DataFrame(data['value'])
 
-    # Extraire les données
-    data_rows = []
+    # Filtrer les colonnes nécessaires
+    df = df[columns]
 
-    if 'value' in data:
-        for entry in data['value']:
-            row = {
-                'IndicatorCode': entry.get('IndicatorCode'),
-                'IndicatorName': entry.get('IndicatorName'),
-                'CountryCode': entry.get('SpatialDim'),
-                'Country': entry.get('SpatialDimType'),
-                'Value': entry.get('NumericValue')
-            }
+    # Renommer les colonnes pour simplifier la compréhension
+    df.rename(columns={
+        'SpatialDim': 'pays',
+        'TimeDim': 'annee',
+        'Dim1': 'sexe',
+        'Value': 'valeur',
+        'Low': 'borne_inferieure',
+        'High': 'borne_superieure'
+    }, inplace=True)
 
-            if has_time_dim:
-                row['Year'] = entry.get('TimeDim')
-            else:
-                row['Year'] = None  # Ou une valeur par défaut
+    # Nettoyer les valeurs : extraire uniquement la partie numérique de 'valeur'
+    def extract_continuous_value(value):
+        try:
+            # Extraction de la première valeur avant le crochet
+            return float(value.split(" ")[0].replace("[", "").replace("]", ""))
+        except (ValueError, IndexError, AttributeError):
+            return None  # Retourner None si l'extraction échoue
 
-            if has_sex_dim:
-                row['Sex'] = entry.get('Dim1')
-            else:
-                row['Sex'] = None  # Ou une valeur par défaut
+    df['valeur'] = df['valeur'].apply(extract_continuous_value)
 
-            data_rows.append(row)
-    else:
-        print("Aucune donnée trouvée dans la réponse de l'API.")
-
-    df = pd.DataFrame(data_rows)
+    # Supprimer les lignes avec des valeurs non numériques après traitement
+    df = df.dropna(subset=['valeur'])
 
     return df
+
