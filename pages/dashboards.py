@@ -274,46 +274,46 @@ def display_overview_content():
         unsafe_allow_html=True,
     )
 
-    # Question 1
-question_1 = st.radio(
-    "1️⃣ Quel est le principal facteur contribuant à l'augmentation des risques métaboliques dans le monde ?",
-    options=[
-        "A. Urbanisation rapide et mode de vie sédentaire",
-        "B. Augmentation de l'espérance de vie",
-        "C. Progrès dans le diagnostic médical",
-        "D. Toutes les réponses"
-    ],
-    key="quiz_question_1"  # Clé unique pour éviter les conflits
-)
+        # Question 1
+    question_1 = st.radio(
+        "1️⃣ Quel est le principal facteur contribuant à l'augmentation des risques métaboliques dans le monde ?",
+        options=[
+            "A. Urbanisation rapide et mode de vie sédentaire",
+            "B. Augmentation de l'espérance de vie",
+            "C. Progrès dans le diagnostic médical",
+            "D. Toutes les réponses"
+        ],
+        key="quiz_question_1"  # Clé unique pour éviter les conflits
+    )
 
-# Vérification de la réponse à la question 1
-if st.button("Valider votre réponse - Q1", key="validate_question_1"):  # Clé unique pour le bouton
-    if question_1 == "D. Toutes les réponses":
-        st.success("✅ Correct ! Tous ces facteurs contribuent à l'augmentation des risques métaboliques.")
-    else:
-        st.error("❌ Incorrect. La bonne réponse est : D. Toutes les réponses.")
+    # Vérification de la réponse à la question 1
+    if st.button("Valider votre réponse - Q1", key="validate_question_1"):  # Clé unique pour le bouton
+        if question_1 == "D. Toutes les réponses":
+            st.success("✅ Correct ! Tous ces facteurs contribuent à l'augmentation des risques métaboliques.")
+        else:
+            st.error("❌ Incorrect. La bonne réponse est : D. Toutes les réponses.")
 
-# Ajout d'un espace entre les questions
-st.write("")
+    # Ajout d'un espace entre les questions
+    st.write("")
 
-# Question 2
-question_2 = st.radio(
-    "2️⃣ Quels comportements peuvent réduire les risques métaboliques ?",
-    options=[
-        "A. Consommer plus de fruits et légumes",
-        "B. Augmenter l'activité physique",
-        "C. Réduire la consommation d'aliments transformés",
-        "D. Toutes les réponses"
-    ],
-    key="quiz_question_2"  # Clé unique pour éviter les conflits
-)
+    # Question 2
+    question_2 = st.radio(
+        "2️⃣ Quels comportements peuvent réduire les risques métaboliques ?",
+        options=[
+            "A. Consommer plus de fruits et légumes",
+            "B. Augmenter l'activité physique",
+            "C. Réduire la consommation d'aliments transformés",
+            "D. Toutes les réponses"
+        ],
+        key="quiz_question_2"  # Clé unique pour éviter les conflits
+    )
 
-# Vérification de la réponse à la question 2
-if st.button("Valider votre réponse - Q2", key="validate_question_2"):  # Clé unique pour le bouton
-    if question_2 == "D. Toutes les réponses":
-        st.success("✅ Correct ! Tous ces comportements aident à réduire les risques métaboliques.")
-    else:
-        st.error("❌ Incorrect. La bonne réponse est : D. Toutes les réponses.")
+    # Vérification de la réponse à la question 2
+    if st.button("Valider votre réponse - Q2", key="validate_question_2"):  # Clé unique pour le bouton
+        if question_2 == "D. Toutes les réponses":
+            st.success("✅ Correct ! Tous ces comportements aident à réduire les risques métaboliques.")
+        else:
+            st.error("❌ Incorrect. La bonne réponse est : D. Toutes les réponses.")
 
 
 
