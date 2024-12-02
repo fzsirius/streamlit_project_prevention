@@ -85,6 +85,7 @@ def display_dashboard():
         unsafe_allow_html=True,
     )
 
+
 def display_overview_content():
     """
     Fonction pour afficher uniquement le contenu de la vue d'ensemble avec filtres dynamiques pour le sexe.
@@ -92,10 +93,21 @@ def display_overview_content():
     # Charger les données
     evolution_data = dl.load_evolution_facteurs()
 
+    # Vérification des données
+    if evolution_data is None or evolution_data.empty:
+        st.error("Les données pour la vue d'ensemble sont introuvables ou invalides.")
+        return
+
+    # Vérifier que les colonnes critiques existent
+    required_columns = {"year", "rei", "metric", "val", "sex", "age"}
+    if not required_columns.issubset(evolution_data.columns):
+        st.error("Les colonnes requises ne sont pas présentes dans les données.")
+        return
+
     # Affichage interactif du tableau de données
-    with st.expander("Afficher les données brutes 📋", expanded=False, key="expander_overview"):
+    with st.expander("Afficher les données brutes 📋", expanded=False):
         st.write("Les données ci-dessous contiennent des informations détaillées sur les facteurs de risque au fil des années.")
-        st.dataframe(evolution_data, key="dataframe_overview")  # Table interactive avec clé
+        st.dataframe(evolution_data)  # Table interactive
 
     # Ajouter une option de téléchargement des données
     csv_data = evolution_data.to_csv(index=False)  # Convertir les données en format CSV
@@ -103,17 +115,17 @@ def display_overview_content():
         label="📥 Télécharger les données",
         data=csv_data,
         file_name="facteurs_de_risque.csv",
-        mime="text/csv",
-        key="download_overview"
+        mime="text/csv"
     )
 
     # Ajouter un slider pour sélectionner l'année
+    min_year = int(evolution_data["year"].min())
+    max_year = int(evolution_data["year"].max())
     selected_year = st.slider(
         "Sélectionnez une année",
-        min_value=int(evolution_data["year"].min()),
-        max_value=int(evolution_data["year"].max()),
-        value=int(evolution_data["year"].max()),
-        key="slider_overview_year"
+        min_value=min_year,
+        max_value=max_year,
+        value=max_year
     )
 
     # Ajouter des boutons radio pour sélectionner le sexe
@@ -121,8 +133,7 @@ def display_overview_content():
         "Sélectionnez le sexe :",
         options=["Les deux", "Homme", "Femme"],
         index=0,  # Par défaut sur "Les deux"
-        horizontal=True,  # Boutons alignés horizontalement
-        key="radio_overview_sex"
+        horizontal=True
     )
 
     # Catégories principales et sous-catégories pour le graphique en barres
@@ -134,147 +145,110 @@ def display_overview_content():
                                                     "Exposition au plomb", "Exposition professionnelle aux substances cancérigènes"]
     }
 
-    # Filtrer les données pour le camembert en fonction de l'année et du sexe sélectionnés
+    # Filtrer les données pour le camembert
     pie_data = evolution_data[
-        (evolution_data["metric"] == "%") &
-        (evolution_data["sex"] == selected_sex) &
-        (evolution_data["age"] == "Tout age") &
-        (evolution_data["year"] == selected_year) &
-        (evolution_data["rei"].isin(["Risques métaboliques", "Risques comportementaux", "Risques environnementaux/professionnels"]))
+        (evolution_data["metric"] == "%") & 
+        (evolution_data["sex"] == selected_sex) & 
+        (evolution_data["age"] == "Tout age") & 
+        (evolution_data["year"] == selected_year)
     ][["rei", "val"]]
-    pie_data.columns = ["Category", "Value"]  # Renommer les colonnes pour le graphique
 
-    # Convertir les valeurs en pourcentage réel en multipliant par 100
+    if pie_data.empty:
+        st.error("Aucune donnée disponible pour les filtres sélectionnés.")
+        return
+
+    # Renommer les colonnes pour le graphique
+    pie_data.columns = ["Category", "Value"]
+
+    # Convertir les valeurs en pourcentage
     pie_data["Value"] *= 100
-
-    # Calculer la part "Autres"
-    autres_percentage = 100 - pie_data["Value"].sum()
+    autres_percentage = max(0, 100 - pie_data["Value"].sum())
     autres_row = pd.DataFrame({"Category": ["Autres"], "Value": [autres_percentage]})
     pie_data = pd.concat([pie_data, autres_row], ignore_index=True)
 
-    # Définir les couleurs pour chaque catégorie
-    category_colors = {
-        "Risques métaboliques": "#1f77b4",
-        "Risques comportementaux": "#ff7f0e",
-        "Risques environnementaux/professionnels": "#2ca02c",
-        "Autres": "#636363"
-    }
-
-    # Graphique camembert avec Plotly
+    # Graphiques avec Plotly
     fig1 = px.pie(
-        pie_data, values='Value', names='Category',
+        pie_data, values="Value", names="Category",
         title=f"Répartition des décès par facteur ({selected_sex}) - {selected_year}",
-        hole=0.3, color='Category',
-        color_discrete_map=category_colors
-    )
-    fig1.update_layout(
-        title_font_size=20,
-        margin=dict(t=40, b=40, l=20, r=20),
-        template="plotly_dark",
-        height=400,
-    )
-    fig1.update_traces(
-        textposition='inside',
-        textinfo='percent+label',
-        marker=dict(line=dict(color='#333333', width=2))
+        hole=0.3
     )
 
-    # Filtrer les données pour le graphique en barres et restreindre aux sous-catégories spécifiées
+    # Filtrer pour les barres horizontales
     bar_data = evolution_data[
         (evolution_data["metric"] == "#") &
-        (evolution_data["sex"] == selected_sex) &
-        (evolution_data["age"] == "Tout age") &
-        (evolution_data["year"] == selected_year) &
-        (evolution_data["rei"].isin(
-            categories["Risques métaboliques"] +
-            categories["Risques comportementaux"] +
-            categories["Risques environnementaux/professionnels"]
-        ))
+        (evolution_data["sex"] == selected_sex) & 
+        (evolution_data["year"] == selected_year)
     ]
 
-    # Ajouter la catégorie et couleur correspondante
-    bar_data["Category"] = bar_data["rei"].apply(
-        lambda x: next((cat for cat, subcat in categories.items() if x in subcat), "Autres")
-    )
-    bar_data["Color"] = bar_data["Category"].map(category_colors)
+    if bar_data.empty:
+        st.error("Aucune donnée disponible pour les graphiques en barres.")
+        return
 
-    # Trier les données pour que les barres les plus grandes soient en haut
-    bar_data = bar_data.sort_values(by="val", ascending=True)
-
-    # Graphique en barres horizontales avec Plotly
-    fig2 = px.bar(
-        bar_data,
-        x="val",
-        y="rei",
-        color="Category",
-        color_discrete_map=category_colors,
-        orientation="h",
-        labels={"val": "Nombre de décès", "rei": "Facteurs de risque"},
-        title=f"Nombre de décès par sous-catégorie ({selected_sex}) - {selected_year}",
-        template="plotly_dark"
-    )
-    fig2.update_layout(
-        title_font_size=20,
-        xaxis_title="Nombre de décès",
-        yaxis_title="Facteurs de risque",
-        height=400,
-        margin=dict(t=40, b=40, l=20, r=20),
-        showlegend=False  # Supprimer la légende
+    # Ajouter graphiques côte à côte
+    col1, col2 = st.columns(2)
+    col1.plotly_chart(fig1, use_container_width=True)
+    col2.plotly_chart(
+        px.bar(
+            bar_data, x="val", y="rei",
+            orientation="h",
+            title="Facteurs de risque - Barres"
+        ), use_container_width=True
     )
 
-    # Disposition en colonnes pour afficher le camembert et le graphique en barres côte à côte
-    col1, col2 = st.columns([1, 1.2], key="columns_overview")
-    with col1:
-        st.plotly_chart(fig1, use_container_width=True, key="pie_chart_overview")
-    with col2:
-        st.plotly_chart(fig2, use_container_width=True, key="bar_chart_overview")
 
-        # Graphique linéaire montrant l'évolution des décès liés aux différents types de risques
+    # Graphique linéaire montrant l'évolution des décès liés aux différents types de risques
     st.write("---")
-   
 
-    # Filtrer les données pour obtenir les tendances temporelles
-    trend_data = evolution_data[
-        (evolution_data["metric"] == "#") &
-        (evolution_data["sex"] == "Les deux") &
-        (evolution_data["age"] == "Tout age") &
-        (evolution_data["rei"].isin(["Risques métaboliques", "Risques comportementaux", "Risques environnementaux/professionnels"]))
-    ][["year", "rei", "val"]]
+    # Vérification de la disponibilité des données
+    if evolution_data is None or evolution_data.empty:
+        st.error("Les données nécessaires pour afficher les tendances ne sont pas disponibles.")
+    else:
+        # Filtrer les données pour obtenir les tendances temporelles
+        trend_data = evolution_data[
+            (evolution_data["metric"] == "#") &
+            (evolution_data["sex"] == "Les deux") &
+            (evolution_data["age"] == "Tout age") &
+            (evolution_data["rei"].isin(["Risques métaboliques", "Risques comportementaux", "Risques environnementaux/professionnels"]))
+        ][["year", "rei", "val"]]
 
-    # Graphique linéaire interactif avec Plotly Express
-    fig3 = px.line(
-        trend_data,
-        x="year",
-        y="val",
-        color="rei",
-        labels={"year": "Année", "val": "Nombre de décès", "rei": "Type de risque"},
-        title="Tendances des décès par type de risque",
-        markers=True
-    )
+        # Vérification si les données sont disponibles après le filtrage
+        if trend_data.empty:
+            st.warning("Aucune donnée disponible pour les tendances des décès par type de risque.")
+        else:
+            # Graphique linéaire interactif avec Plotly Express
+            fig3 = px.line(
+                trend_data,
+                x="year",
+                y="val",
+                color="rei",
+                labels={"year": "Année", "val": "Nombre de décès", "rei": "Type de risque"},
+                title="Tendances des décès par type de risque",
+                markers=True
+            )
 
-    # Mise à jour du style du graphique
-    fig3.update_layout(
-        title=dict(font=dict(size=20)),
-        xaxis=dict(title="Année", showgrid=False),
-        yaxis=dict(title="Nombre de décès", showgrid=True),
-        legend=dict(title="Type de risque"),
-        template="plotly_dark",
-        margin=dict(t=40, b=40, l=20, r=20)
-    )
+            # Mise à jour du style du graphique
+            fig3.update_layout(
+                title=dict(font=dict(size=20)),
+                xaxis=dict(title="Année", showgrid=False),
+                yaxis=dict(title="Nombre de décès", showgrid=True),
+                legend=dict(title="Type de risque"),
+                template="plotly_dark",
+                margin=dict(t=40, b=40, l=20, r=20)
+            )
 
-    # Affichage du graphique
-    st.plotly_chart(fig3, use_container_width=True)
+            # Affichage du graphique
+            st.plotly_chart(fig3, use_container_width=True)
 
         # Ajouter une séparation visuelle
-    st.write("---")
-    st.markdown(
-        """
-        <h3 style="text-align: center; color: #666;">🎯 Quiz : Comprenez-vous pourquoi les risques métaboliques augmentent ?</h3>
-        """,
-        unsafe_allow_html=True,
-    )
+        st.write("---")
+        st.markdown(
+            """
+            <h3 style="text-align: center; color: #666;">🎯 Quiz : Comprenez-vous pourquoi les risques métaboliques augmentent ?</h3>
+            """,
+            unsafe_allow_html=True,
+        )
 
-        # Question 1
+    # Question 1
     question_1 = st.radio(
         "1️⃣ Quel est le principal facteur contribuant à l'augmentation des risques métaboliques dans le monde ?",
         options=[
@@ -314,6 +288,7 @@ def display_overview_content():
             st.success("✅ Correct ! Tous ces comportements aident à réduire les risques métaboliques.")
         else:
             st.error("❌ Incorrect. La bonne réponse est : D. Toutes les réponses.")
+
 
 
 
