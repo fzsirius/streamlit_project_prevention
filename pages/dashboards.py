@@ -4,23 +4,8 @@ import data_loader as dl
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-
-
-import streamlit as st
 from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_extras.metric_cards import style_metric_cards
-
-import streamlit as st
-from streamlit_extras.add_vertical_space import add_vertical_space  
-
-import streamlit as st
-import plotly.express as px
-import data_loader as dl
-
-import streamlit as st
-import plotly.express as px
-import data_loader as dl
-
 
 def display_dashboard():
     """
@@ -113,7 +98,7 @@ def display_overview_content():
         min_value=int(evolution_data["year"].min()),
         max_value=int(evolution_data["year"].max()),
         value=int(evolution_data["year"].max()),
-        key="overview_year"
+        key="overview_year_slider"
     )
 
     # Ajouter des boutons radio pour sélectionner le sexe
@@ -122,7 +107,7 @@ def display_overview_content():
         options=["Les deux", "Homme", "Femme"],
         index=0,  # Par défaut sur "Les deux"
         horizontal=True  # Boutons alignés horizontalement
-        key="radio_sex_overview"
+        key="radio_sex_vue_ensemble"
     )
 
     # Catégories principales et sous-catégories pour le graphique en barres
@@ -346,7 +331,7 @@ def display_tobacco_alcohol():
         min_value=min_year,
         max_value=max_year,
         value=max_year,  # Par défaut, l'année la plus récente
-        key="slider alcohol tabac"
+        key="metric_year"
     )
 
     # Filtrer les données pour l'année sélectionnée
@@ -535,7 +520,6 @@ def display_tobacco_alcohol():
         options=unique_sexes,
         index=unique_sexes.tolist().index('Tous') if 'Tous' in unique_sexes else 0,
         horizontal=True
-        key="sex_radio_alcohol"
     )
 
     # Filtrer les données pour le sexe sélectionné

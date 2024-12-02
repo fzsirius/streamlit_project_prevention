@@ -1,5 +1,6 @@
 import streamlit as st
-from pages.dashboards import home
+from pages import dashboards, home  # Importer les pages d'accueil et de vue d'ensemble
+from pages.dashboards import display_dashboard
 
 
 # Importer la bibliothèque de menu optionnel
