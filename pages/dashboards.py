@@ -378,21 +378,97 @@ def display_tobacco_alcohol():
         (data_tobacco_alcohol["age"] == age_all)
     ]["val"].sum()
 
-    # Afficher les indicateurs en une ligne
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Total Hommes", f"{homme_total:,.0f}")
-    col2.metric("Total Femmes", f"{femme_total:,.0f}")
-    col3.metric("Total Adolescents (<20 ans)", f"{adolescent_total:,.0f}")
-
-    # Appliquer le style des metric cards
-    style_metric_cards(
-        background_color="#f0f2f6",
-        border_size_px=2,
-        border_color="#e0e3e7",
-        border_radius_px=10,
-        border_left_color="#1f77b4",
-        box_shadow=True
+    # Afficher les indicateurs en une ligne avec des colonnes et du style HTML/CSS natif
+    st.markdown(
+        """
+        <style>
+            .metric-card {
+                background-color: #f0f2f6;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                font-family: Arial, sans-serif;
+            }
+            .metric-title {
+                font-size: 16px;
+                font-weight: bold;
+                color: #333333;
+            }
+            .metric-value {
+                font-size: 24px;
+                font-weight: bold;
+                color: #1f77b4;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True
     )
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                <div class="metric-title">Total Hommes</div>
+                <div class="metric-value">{homme_total:,.0f}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with col2:
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                <div class="metric-title">Total Femmes</div>
+                <div class="metric-value">{femme_total:,.0f}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with col3:
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                <div class="metric-title">Total Adolescents (&lt;20 ans)</div>
+                <div class="metric-value">{adolescent_total:,.0f}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    # -- Ajouter le graphique d'évolution comparant le tabac et l'alcool --
+
+    st.write("### Évolution du nombre de décès liés au tabac et à l'alcool")
+
+    # Filtrer les données pour obtenir les tendances temporelles
+    data_evolution = evolution_data[
+        (evolution_data["metric"] == "#") &
+        (evolution_data["sex"] == "Les deux") &
+        (evolution_data["age"] == "Tout age") &
+        (evolution_data["rei"].isin(["Tabac", "Consommation d’alcool"]))
+    ][["year", "rei", "val"]]
+
+    # Vérifier si le DataFrame n'est pas vide
+    if data_evolution.empty:
+        st.write("Aucune donnée disponible pour l'évolution des décès liés au tabac et à l'alcool.")
+    else:
+        # Graphique linéaire interactif avec Plotly Express
+        fig_evolution = px.line(
+            data_evolution,
+            x="year",
+            y="val",
+            color="rei",
+            labels={"year": "Année", "val": "Nombre de décès", "rei": "Facteur de risque"},
+            markers=True
+        )
+
+        # Afficher le graphique
+        st.plotly_chart(fig_evolution, use_container_width=True)
+
 
     # -- Ajouter le graphique d'évolution comparant le tabac et l'alcool --
 
