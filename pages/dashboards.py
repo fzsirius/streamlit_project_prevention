@@ -17,6 +17,11 @@ import streamlit as st
 import plotly.express as px
 import data_loader as dl
 
+import streamlit as st
+import plotly.express as px
+import data_loader as dl
+
+
 def display_dashboard():
     """
     Fonction principale pour gérer les onglets du Dashboard.
@@ -96,7 +101,7 @@ def display_overview_content():
                               max_value=int(evolution_data["year"].max()), value=int(evolution_data["year"].max()), key="overview_year")
     selected_sex = st.radio("Sélectionnez le sexe :", options=["Les deux", "Homme", "Femme"], index=0, horizontal=True, key="overview_sex")
 
-    # Camembert des catégories principales
+    # Visualisation
     pie_data = evolution_data[
         (evolution_data["metric"] == "%") & 
         (evolution_data["sex"] == selected_sex) & 
@@ -109,40 +114,26 @@ def display_overview_content():
     )
     st.plotly_chart(fig1, use_container_width=True)
 
-    # Graphique linéaire : tendances
-    trend_data = evolution_data[
-        (evolution_data["metric"] == "#") & 
-        (evolution_data["sex"] == "Les deux") & 
-        (evolution_data["rei"].isin(["Tabac", "Consommation d’alcool", "Obésité"]))
-    ]
-    fig2 = px.line(
-        trend_data, x="year", y="val", color="rei", title="Tendances des décès par type de risque", markers=True
-    )
-    st.plotly_chart(fig2, use_container_width=True)
-
 
 def display_tobacco_alcohol():
     """
     Visualisation des données tabac et alcool.
     """
-    # Charger les données
     evolution_data = dl.load_evolution_facteurs()
     data_alcohol = dl.load_data_alcohol()
 
+    # Section des données
     st.write("### Décès liés au tabac et alcool, par catégorie de personne")
     selected_year = st.slider("Sélectionnez une année", min_value=int(evolution_data["year"].min()),
                               max_value=int(evolution_data["year"].max()), value=int(evolution_data["year"].max()), key="alcohol_year")
 
-    # Total hommes, femmes, adolescents
+    # Totaux dynamiques
     col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Hommes", "123,456")
-    with col2:
-        st.metric("Femmes", "78,901")
-    with col3:
-        st.metric("Adolescents", "45,678")
+    col1.metric("Hommes", "123,456")
+    col2.metric("Femmes", "78,901")
+    col3.metric("Adolescents", "45,678")
 
-    # Graphique : tendances
+    # Tendances temporelles
     trend_data = evolution_data[
         (evolution_data["metric"] == "#") & 
         (evolution_data["rei"].isin(["Tabac", "Consommation d’alcool"]))
@@ -163,7 +154,6 @@ def display_metabolic_risks():
         "Glycémie élevée (≥7.0 mmol/L)": "NCD_GLUC_04"
     }
 
-    # Sélection
     selected_indicator_name = st.selectbox("Choisissez un indicateur", list(indicators.keys()), key="indicator_selection")
     indicator_code = indicators[selected_indicator_name]
     data = dl.load_metabolic_risk_data(indicator_code)
