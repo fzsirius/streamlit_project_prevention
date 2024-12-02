@@ -154,7 +154,7 @@ def display_overview_content():
     fig1.update_layout(
         title_font_size=20,
         margin=dict(t=40, b=40, l=20, r=20),
-        template="plotly_dark",
+        template="plotly_white",
         height=400,
     )
     fig1.update_traces(
@@ -195,7 +195,7 @@ def display_overview_content():
         orientation="h",
         labels={"val": "Nombre de décès", "rei": "Facteurs de risque"},
         title=f"Nombre de décès par sous-catégorie ({selected_sex}) - {selected_year}",
-        template="plotly_dark"
+        template="plotly_white"
     )
     fig2.update_layout(
         title_font_size=20,
@@ -244,7 +244,7 @@ def display_overview_content():
         xaxis=dict(title="Année", showgrid=False),
         yaxis=dict(title="Nombre de décès", showgrid=True),
         legend=dict(title="Type de risque"),
-        template="plotly_dark",
+        template="plotly_white",
         margin=dict(t=40, b=40, l=20, r=20)
     )
 
