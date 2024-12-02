@@ -259,7 +259,7 @@ def display_overview_content():
         unsafe_allow_html=True,
     )
 
-    # Question 1
+        # Question 1
     question_1 = st.radio(
         "1️⃣ Quel est le principal facteur contribuant à l'augmentation des risques métaboliques dans le monde ?",
         options=[
@@ -268,18 +268,20 @@ def display_overview_content():
             "C. Progrès dans le diagnostic médical",
             "D. Toutes les réponses"
         ],
-        key="question_1"
+        key="quiz_question_1"  # Clé unique pour éviter les conflits
     )
 
     # Vérification de la réponse à la question 1
-    if st.button("Valider votre réponse", key="validate_1"):
+    if st.button("Valider votre réponse - Q1", key="validate_question_1"):  # Clé unique pour le bouton
         if question_1 == "D. Toutes les réponses":
             st.success("✅ Correct ! Tous ces facteurs contribuent à l'augmentation des risques métaboliques.")
         else:
             st.error("❌ Incorrect. La bonne réponse est : D. Toutes les réponses.")
 
-    # Question 2
+    # Ajout d'un espace entre les questions
     st.write("")
+
+    # Question 2
     question_2 = st.radio(
         "2️⃣ Quels comportements peuvent réduire les risques métaboliques ?",
         options=[
@@ -288,11 +290,11 @@ def display_overview_content():
             "C. Réduire la consommation d'aliments transformés",
             "D. Toutes les réponses"
         ],
-        key="question_2"
+        key="quiz_question_2"  # Clé unique pour éviter les conflits
     )
 
     # Vérification de la réponse à la question 2
-    if st.button("Valider votre réponse", key="validate_2"):
+    if st.button("Valider votre réponse - Q2", key="validate_question_2"):  # Clé unique pour le bouton
         if question_2 == "D. Toutes les réponses":
             st.success("✅ Correct ! Tous ces comportements aident à réduire les risques métaboliques.")
         else:
