@@ -1,4 +1,4 @@
-from streamlit_extras.metric_cards import style_metric_cards
+#from streamlit_extras.metric_cards import style_metric_cards
 import streamlit as st
 import data_loader as dl
 import plotly.express as px
@@ -7,11 +7,11 @@ import pandas as pd
 
 
 import streamlit as st
-from streamlit_extras.add_vertical_space import add_vertical_space
-from streamlit_extras.metric_cards import style_metric_cards
+#from streamlit_extras.add_vertical_space import add_vertical_space
+#from streamlit_extras.metric_cards import style_metric_cards
 
 import streamlit as st
-from streamlit_extras.add_vertical_space import add_vertical_space  # Si tu veux des espaces verticaux stylés
+#from streamlit_extras.add_vertical_space import add_vertical_space  
 
 def display_dashboard():
     """
